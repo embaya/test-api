@@ -84,3 +84,5 @@ fos_rest:
         enabled: true
     param_fetcher_listener:
         enabled: true
+
+nelmio_api_doc: ~

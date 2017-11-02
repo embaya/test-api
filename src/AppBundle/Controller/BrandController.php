@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Entity\Brand;
 use AppBundle\Form\BrandType;
+use Nelmio\ApiDocBundle\Annotation as Doc;
 
 class BrandController extends Controller
 {
@@ -21,6 +22,16 @@ class BrandController extends Controller
     /**
      * @Rest\View()
      * @Rest\Get("/brands")
+     *
+     * @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Brands",
+     *     description="Get the list of all Brands",
+     *     statusCodes={
+     *         200="Returned when Brands found",
+     *         404="Returned when a violation is raised by validation"
+     *     }
+     * )
      */
     public function getBrandsAction(Request $request){
 
@@ -35,6 +46,26 @@ class BrandController extends Controller
     /**
      * @Rest\View()
      * @Rest\Get("/brands/{id}")
+     *
+     * @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Brands",
+     *     description="Get one Brand.",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "dataType"="integer",
+     *             "requirements"="\d+",
+     *             "description"="The Brand id"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Returned when Brands found",
+     *         404="Returned when a violation is raised by validation"
+     *     }
+     * )
+     *
+     *
      */
     public function getBrandAction(Request $request)
     {
@@ -52,6 +83,21 @@ class BrandController extends Controller
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED)
      * @Rest\Post("/brands")
+     *
+     *     @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Brands",
+     *     description="Post a Brand.",
+     *     statusCodes={
+     *         201="Returned when created",
+     *         400="Returned when a violation is raised by validation"
+     *     },
+     *     input= {
+     *         "class" = "AppBundle\Form\BrandType",
+     *         "name" = ""
+     *  }
+     * )
+     *
      */
     public function postBrandAction(Request $request){
 
@@ -74,6 +120,25 @@ class BrandController extends Controller
     /**
      * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
      * @Rest\Delete("/brands/{id}")
+     *
+     * @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Brands",
+     *     description="Delete a Brand.",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "dataType"="integer",
+     *             "requirements"="\d+",
+     *             "description"="The Brand id."
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Returned when Brands found",
+     *         404="Returned when a violation is raised by validation"
+     *     }
+     * )
+     *
      */
     public function delelebrandsAction(Request $request){
 
@@ -91,6 +156,29 @@ class BrandController extends Controller
     /**
      * @Rest\View()
      * @Rest\Put("/brands/{id}")
+     *
+     * @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Brands",
+     *     description="Update Brand.",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "dataType"="integer",
+     *             "requirements"="\d+",
+     *             "description"="The Brand id."
+     *         }
+     *     },
+     *     input= {
+     *         "class" = "AppBundle\Form\BrandType",
+     *         "name" = ""
+     *     },
+     *     statusCodes={
+     *         200="Returned when Brands found",
+     *         404="Returned when a violation is raised by validation"
+     *     }
+     * )
+     *
      */
     public function updateBrandAction(Request $request) {
 

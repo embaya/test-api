@@ -14,12 +14,24 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Form\ProductType;
 use AppBundle\Entity\Product;
+use Nelmio\ApiDocBundle\Annotation as Doc;
+
 
 class ProductController extends FOSRestController
 {
     /**
      * @Rest\View(serializerGroups={"product"})
      * @Rest\Get("/products")
+     *
+     * @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Products",
+     *     description="Get the list of all Products",
+     *     statusCodes={
+     *         200="Returned when Products found",
+     *         404="Returned when a violation is raised by validation"
+     *     }
+     * )
      */
     public function getProductsAction(Request $request){
 
@@ -35,12 +47,31 @@ class ProductController extends FOSRestController
 
     /**
      * @Rest\View(serializerGroups={"product"})
-     * @Rest\Get("products/{product_id}")
+     * @Rest\Get("products/{id}")
+     *
+     * @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Products",
+     *     description="Get one Product.",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "dataType"="integer",
+     *             "requirements"="\d+",
+     *             "description"="The Product id"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Returned when Products found",
+     *         404="Returned when a violation is raised by validation"
+     *     }
+     * )
+     *
      */
     public function getProductAction(Request $request){
 
         $em = $this->getDoctrine()->getManager();
-        $product = $em->getRepository('AppBundle:Product')->find($request->get('product_id'));
+        $product = $em->getRepository('AppBundle:Product')->find($request->get('id'));
         if(empty($product)){
             return \FOS\RestBundle\View\View::create(['message' => 'Product not found'], Response::HTTP_NOT_FOUND);
         }
@@ -51,6 +82,20 @@ class ProductController extends FOSRestController
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"product"})
      * @Rest\Post("/products")
+     *
+     *     @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Products",
+     *     description="Post a Product.",
+     *     statusCodes={
+     *         201="Returned when created",
+     *         400="Returned when a violation is raised by validation"
+     *     },
+     *     input= {
+     *         "class" = "AppBundle\Form\ProductType",
+     *         "name" = ""
+     *  }
+     * )
      */
     public function postProductsAction(Request $request){
 
@@ -63,7 +108,8 @@ class ProductController extends FOSRestController
 
         if($form->isValid()){
             $category = $form->get('categories')->getData();
-            $product->addCategory($category);
+            if($category)
+                $product->addCategory($category);
             $em->persist($product);
             $em->flush();
             return $product;
@@ -75,6 +121,25 @@ class ProductController extends FOSRestController
     /**
      * @Rest\View(statusCode=Response::HTTP_NO_CONTENT, serializerGroups={"product"})
      * @Rest\Delete("/products/{id}")
+     *
+     * @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Products",
+     *     description="Delete a Product.",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "dataType"="integer",
+     *             "requirements"="\d+",
+     *             "description"="The Product id."
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Returned when Products found",
+     *         404="Returned when a violation is raised by validation"
+     *     }
+     * )
+     *
      */
     public function deleleproductsAction(Request $request){
 
@@ -94,6 +159,28 @@ class ProductController extends FOSRestController
     /**
      * @Rest\View(serializerGroups={"product"})
      * @Rest\Put("/products/{id}")
+     *
+     * @Doc\ApiDoc(
+     *     resource=true,
+     *     section="Products",
+     *     description="Update Product.",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "dataType"="integer",
+     *             "requirements"="\d+",
+     *             "description"="The Product id."
+     *         }
+     *     },
+     *     input= {
+     *         "class" = "AppBundle\Form\ProductType",
+     *         "name" = ""
+     *     },
+     *     statusCodes={
+     *         200="Returned when Products found",
+     *         404="Returned when a violation is raised by validation"
+     *     }
+     * )
      */
     public function updateProductAction(Request $request) {
 
@@ -108,7 +195,8 @@ class ProductController extends FOSRestController
         $form->submit($request->request->all(), true);
         if($form->IsValid()){
             $category = $form->get('categories')->getData();
-            $product->addCategory($category);
+            if($category)
+                $product->addCategory($category);
             $em->merge($product);
             $em->flush();
             return $product;
