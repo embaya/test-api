@@ -63,7 +63,8 @@ class ProductController extends FOSRestController
 
         if($form->isValid()){
             $category = $form->get('categories')->getData();
-            $product->addCategory($category);
+            if($category)
+                $product->addCategory($category);
             $em->persist($product);
             $em->flush();
             return $product;
@@ -108,7 +109,8 @@ class ProductController extends FOSRestController
         $form->submit($request->request->all(), true);
         if($form->IsValid()){
             $category = $form->get('categories')->getData();
-            $product->addCategory($category);
+            if($category)
+                $product->addCategory($category);
             $em->merge($product);
             $em->flush();
             return $product;
