@@ -1,0 +1,34 @@
+AppBundle\Entity\Product:
+    attributes:
+        id:
+            groups: ['product', 'category']
+        name:
+            groups: ['product', 'category']
+        active:
+            groups: ['product', 'category']
+        url:
+            groups: ['product', 'category']
+        description:
+            groups: ['product', 'category']
+        brand:
+            groups: ['product']
+        categories:
+            groups: ['product']
+        md5:
+            groups: ['product']
+
+AppBundle\Entity\Category:
+    attributes:
+        id:
+            groups: ['default', 'product', 'category']
+        name:
+            groups: ['default', 'product', 'category']
+        products:
+            groups: ['default']
+
+AppBundle\Entity\Brand:
+    attributes:
+        id:
+            groups: ['product', 'brand']
+        name:
+            groups: ['product', 'brand']

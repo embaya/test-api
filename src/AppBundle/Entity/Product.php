@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Product
@@ -25,20 +27,21 @@ class Product
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="url", type="string", length=255)
+     * @ORM\Column(name="url", type="string", length=255, nullable=true)
      */
     private $url;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="active", type="boolean")
+     * @ORM\Column(name="active", type="boolean", nullable=true)
      */
     private $active;
 
@@ -46,6 +49,7 @@ class Product
      * @var string
      *
      * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank()
      */
     private $description;
 
@@ -53,21 +57,31 @@ class Product
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Brand")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank()
      */
 
     private $brand;
 
     /**
-     * @var
+     * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="Category", inversedBy="products")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Category", inversedBy="products", cascade={"persist"},fetch="EAGER")
      * @ORM\JoinTable(name="products_categories",
      *      joinColumns={@ORM\JoinColumn(name="product_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
      * )
+     *
      */
     private $categories;
 
+
+    /**
+     * Constructor
+     */
+    public function __construct(){
+
+        $this->categories = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -174,13 +188,6 @@ class Product
     {
         return $this->description;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Set brand
@@ -237,6 +244,11 @@ class Product
      */
     public function getCategories()
     {
+        //dump($this->categories);
         return $this->categories;
+    }
+
+    public function md5(){
+        return md5($this->id);
     }
 }

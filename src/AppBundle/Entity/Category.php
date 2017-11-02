@@ -9,6 +9,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Category
@@ -31,13 +33,14 @@ class Category
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
-     * @var
+     * @var Product[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="Product", mappedBy="categories")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Product", mappedBy="categories")
      */
     private $products;
 
@@ -79,7 +82,7 @@ class Category
      */
     public function __construct()
     {
-        $this->products = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     /**
